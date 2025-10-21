@@ -19,7 +19,7 @@ const App = () => (
   <div className={styles.app}>
     <AppHeader />
     <Routes>
-      {/*<Route path='*' element={<NotFound404 />} />*/}
+      <Route path='*' element={<NotFound404 />} />
       <Route path='/' element={<ConstructorPage />} />
       <Route path='/feed' element={<Feed />} />
 
