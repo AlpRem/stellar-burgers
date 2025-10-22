@@ -1,14 +1,32 @@
-import { FC } from 'react';
-import { Preloader } from '../ui/preloader';
-import { IngredientDetailsUI } from '../ui/ingredient-details';
+import { FC, useEffect } from 'react';
+import { Preloader } from '@ui';
+import { IngredientDetailsUI } from '@ui';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { fetchGetIngredientById } from '../../slice/burgerIngredientSlice';
+import { ErrorServer, NotFound404 } from '@pages';
 
 export const IngredientDetails: FC = () => {
-  /** TODO: взять переменную из стора */
-  const ingredientData = null;
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentIngredient, isLoading, error } = useSelector(
+    (state: RootState) => state.burgerIngredient
+  );
 
-  if (!ingredientData) {
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchGetIngredientById(id));
+    }
+  }, [dispatch, id]);
+
+  if (isLoading || !currentIngredient) {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  if (error) {
+    return <ErrorServer />;
+  }
+
+  return <IngredientDetailsUI ingredientData={currentIngredient} />;
 };

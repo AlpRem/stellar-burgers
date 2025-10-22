@@ -7,7 +7,7 @@ import { RootState } from '../../services/store';
 import { useSelector } from 'react-redux';
 
 export const BurgerIngredients: FC = () => {
-  const { buns, mains, sauces} = useSelector(
+  const { buns, mains, sauces } = useSelector(
     (state: RootState) => state.burgerIngredient
   );
 
