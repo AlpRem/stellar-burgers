@@ -1,9 +1,9 @@
-import { TIngredient } from '@utils-types';
-import { createSlice } from '@reduxjs/toolkit';
+import { TConstructorIngredient, TIngredient } from '@utils-types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type TBurgerIngredientSlice = {
-  bun: TIngredient | null;
-  ingredients: TIngredient[];
+  bun: TConstructorIngredient | null;
+  ingredients: TConstructorIngredient[];
   isLoading: boolean;
   error: string | null;
 };
@@ -19,9 +19,14 @@ const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    addIngredient: (state, action) => {
-      if (action.payload.type === 'bun') state.bun = action.payload;
-      else state.ingredients.push(action.payload);
+    addIngredient: (state, action: PayloadAction<TIngredient>) => {
+      const ingredient: TConstructorIngredient = {
+        ...action.payload,
+        id: crypto.randomUUID()
+      };
+
+      if (ingredient.type === 'bun') state.bun = ingredient;
+      else state.ingredients.push(ingredient);
     }
   }
 });
