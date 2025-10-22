@@ -1,25 +1,24 @@
 import { TIngredient } from '@utils-types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getIngredientsApi } from '@api';
-import * as console from 'node:console';
 
-type IngredientsState = {
+type BurgerIngredientSlice = {
   buns: TIngredient[];
   mains: TIngredient[];
   sauces: TIngredient[];
   isLoading: boolean;
-  isError: boolean;
+  error: string | null;
 };
 
-const initialState: IngredientsState = {
+const initialState: BurgerIngredientSlice = {
   buns: [],
   mains: [],
   sauces: [],
   isLoading: false,
-  isError: false
+  error: null
 };
 
-export const fetchIngredient = createAsyncThunk(
+export const fetchGetBurgerIngredient = createAsyncThunk(
   'ingredients/fetchIngredients',
   async (_, { rejectWithValue }) => {
     try {
@@ -30,28 +29,28 @@ export const fetchIngredient = createAsyncThunk(
   }
 );
 
-const slice = createSlice({
-  name: 'ingredients',
+const burgerIngredientSlice = createSlice({
+  name: 'burgerIngredient',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIngredient.pending, (state) => {
+      .addCase(fetchGetBurgerIngredient.pending, (state) => {
         state.isLoading = true;
-        state.isError = false;
+        state.error = null;
       })
-      .addCase(fetchIngredient.fulfilled, (state, action) => {
+      .addCase(fetchGetBurgerIngredient.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isError = false;
+        state.error = null;
         state.buns = action.payload.filter((data) => data.type === 'bun');
         state.mains = action.payload.filter((data) => data.type === 'main');
         state.sauces = action.payload.filter((data) => data.type === 'sauce');
       })
-      .addCase(fetchIngredient.rejected, (state, action) => {
+      .addCase(fetchGetBurgerIngredient.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = true;
+        state.error = action.payload as string;
       });
   }
 });
 
-export default slice.reducer;
+export default burgerIngredientSlice.reducer;
