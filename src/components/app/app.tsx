@@ -30,7 +30,7 @@ const App = () => {
       <Routes location={background || location}>
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
-        {/*<Route path='/feed' element={<Feed />} />*/}
+        <Route path='/feed' element={<Feed />} />
         {/*<Route path='/login' element={<Login />} />*/}
         {/*<Route path='/register' element={<Register />} />*/}
         {/*<Route path='/forgot-password' element={<ForgotPassword />} />*/}
