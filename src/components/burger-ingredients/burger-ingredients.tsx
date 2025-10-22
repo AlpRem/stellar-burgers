@@ -2,20 +2,14 @@ import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { TTabMode } from '@utils-types';
-import { BurgerIngredientsUI, Preloader } from '@ui';
-import { fetchGetBurgerIngredient } from '../../slice/BurgerIngredientSlice';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { BurgerIngredientsUI } from '@ui';
+import { RootState } from '../../services/store';
+import { useSelector } from 'react-redux';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const { buns, mains, sauces, isLoading, error } = useSelector(
+  const { buns, mains, sauces} = useSelector(
     (state: RootState) => state.burgerIngredient
   );
-
-  useEffect(() => {
-    dispatch(fetchGetBurgerIngredient());
-  }, [dispatch]);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -43,15 +37,6 @@ export const BurgerIngredients: FC = () => {
       setCurrentTab('main');
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
-
-  // if (isLoading) {
-  //   <Preloader />;
-  //   // return <div>Загрузка ингредиентов...</div>;
-  // }
-  //
-  // if (error) {
-  //   // return <div>Ошибка при загрузке ингредиентов: {error}</div>;
-  // }
 
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);

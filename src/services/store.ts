@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import burgerIngredientReducer from '../slice/BurgerIngredientSlice';
+import burgerIngredientReducer from '../slice/burgerIngredientSlice';
 
 export const store = configureStore({
   reducer: {
