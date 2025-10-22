@@ -24,6 +24,12 @@
   color: var(--text-primary-color);
 }
 
+.link_active__nav {
+    display: flex;
+    text-decoration: none;
+    color: var(--text-primary-color);
+}
+
 .link_position_last {
   display: flex;
   justify-content: flex-end;

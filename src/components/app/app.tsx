@@ -14,7 +14,6 @@ import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { ModalUI } from '@ui';
 
 const App = () => {
   const location = useLocation();
