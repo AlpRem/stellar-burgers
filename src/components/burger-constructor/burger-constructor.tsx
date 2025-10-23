@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { clearOrder, fetchSaveOrder } from '../../slice/orderSlice';
+import { clearConstructor } from '../../slice/burgerConstructorSlice';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((state: RootState) => ({
@@ -38,6 +39,7 @@ export const BurgerConstructor: FC = () => {
   };
   const closeOrderModal = () => {
     dispatch(clearOrder());
+    dispatch(clearConstructor());
   };
 
   const price = useMemo(

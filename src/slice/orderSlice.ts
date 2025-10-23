@@ -1,6 +1,11 @@
 import { TOrder } from '@utils-types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getFeedsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
+import {
+  getFeedsApi,
+  getOrderByNumberApi,
+  getOrdersApi,
+  orderBurgerApi
+} from '@api';
 
 type TOrderSlice = {
   orders: TOrder[];
@@ -57,6 +62,17 @@ export const fetchSaveOrder = createAsyncThunk<
   }
 });
 
+export const fetchFindByUserOrders = createAsyncThunk(
+  'orders/fetchUserOrders',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getOrdersApi();
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: 'orders',
   initialState,
@@ -109,6 +125,21 @@ const orderSlice = createSlice({
         state.currentOrder = action.payload;
       })
       .addCase(fetchSaveOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(fetchFindByUserOrders.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchFindByUserOrders.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.orders = action.payload;
+      })
+      .addCase(fetchFindByUserOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
