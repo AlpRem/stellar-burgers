@@ -6,7 +6,8 @@ import {
   logoutApi,
   registerUserApi,
   TLoginData,
-  TRegisterData
+  TRegisterData,
+  updateUserApi
 } from '@api';
 import { setCookie } from '../utils/cookie';
 
@@ -80,6 +81,19 @@ export const fetchLogout = createAsyncThunk<
   }
 });
 
+export const fetchUpdateUser = createAsyncThunk<
+  TUser,
+  Partial<{ name: string; email: string; password: string }>,
+  { rejectValue: string }
+>('userAuth/updateUser', async (userData, { rejectWithValue }) => {
+  try {
+    const res = await updateUserApi(userData);
+    return res.user;
+  } catch (err: any) {
+    return rejectWithValue(err.message);
+  }
+});
+
 export const userAuthSlice = createSlice({
   name: 'userAuth',
   initialState,
@@ -134,7 +148,12 @@ export const userAuthSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
       });
+
     builder
+      .addCase(fetchLogout.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(fetchLogout.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
@@ -142,6 +161,21 @@ export const userAuthSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchLogout.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(fetchUpdateUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchUpdateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.user = action.payload;
+      })
+      .addCase(fetchUpdateUser.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       });
   }

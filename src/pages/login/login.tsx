@@ -1,30 +1,35 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { AppDispatch } from '../../services/store';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { AppDispatch, RootState } from '../../services/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchLogin } from '../../slice/userAuthSlice';
+import { ErrorServer } from '../error-server';
 
 export const Login: FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  const { error } = useSelector((state: RootState) => state.userAuth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(fetchLogin({ email, password })).unwrap();
+    dispatch(fetchLogin({ email, password }))
+      .unwrap()
+      .catch(() => {});
   };
 
   return (
-    <LoginUI
-      errorText=''
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
-      handleSubmit={handleSubmit}
-    />
+    <>
+      {error && <ErrorServer msg={error} />}
+      <LoginUI
+        errorText=''
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+      />
+    </>
   );
 };
