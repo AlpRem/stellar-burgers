@@ -5,6 +5,7 @@ import { FC, useEffect } from 'react';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOrders } from '../../slice/orderSlice';
+import { fetchGetBurgerIngredient } from '../../slice/burgerIngredientSlice';
 
 export const Feed: FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -14,6 +15,7 @@ export const Feed: FC = () => {
   );
 
   useEffect(() => {
+    dispatch(fetchGetBurgerIngredient());
     dispatch(fetchOrders());
   }, [dispatch]);
 

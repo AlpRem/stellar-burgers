@@ -4,12 +4,16 @@ import { getFeedsApi } from '@api';
 
 type TOrderSlice = {
   orders: TOrder[];
+  total: number;
+  totalToday: number;
   isLoading: boolean;
   error: string | null;
 };
 
 const initialState: TOrderSlice = {
   orders: [],
+  total: 0,
+  totalToday: 0,
   isLoading: false,
   error: null
 };
@@ -39,6 +43,8 @@ const orderSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         state.orders = action.payload.orders;
+        state.total = action.payload.total;
+        state.totalToday = action.payload.totalToday;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.isLoading = false;
