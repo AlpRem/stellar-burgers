@@ -1,33 +1,36 @@
-import { FC, useMemo } from 'react';
-import { Preloader } from '../ui/preloader';
-import { OrderInfoUI } from '../ui/order-info';
+import { FC, useEffect, useMemo } from 'react';
+import { Preloader } from '@ui';
+import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { fetchFindByIdOrder } from '../../slice/orderSlice';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const { number } = useParams<{ number: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentOrder } = useSelector((state: RootState) => state.orders);
+  const { buns, mains, sauces } = useSelector(
+    (state: RootState) => state.burgerIngredient
+  );
+  const ingredients: TIngredient[] = [...buns, ...mains, ...sauces];
+  useEffect(() => {
+    if (number) {
+      dispatch(fetchFindByIdOrder(+number));
+    }
+  }, [dispatch, number]);
 
-  const ingredients: TIngredient[] = [];
-
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!currentOrder || !ingredients.length) return null;
 
-    const date = new Date(orderData.createdAt);
+    const date = new Date(currentOrder.createdAt);
 
     type TIngredientsWithCount = {
       [key: string]: TIngredient & { count: number };
     };
 
-    const ingredientsInfo = orderData.ingredients.reduce(
+    const ingredientsInfo = currentOrder.ingredients.reduce(
       (acc: TIngredientsWithCount, item) => {
         if (!acc[item]) {
           const ingredient = ingredients.find((ing) => ing._id === item);
@@ -52,12 +55,12 @@ export const OrderInfo: FC = () => {
     );
 
     return {
-      ...orderData,
+      ...currentOrder,
       ingredientsInfo,
       date,
       total
     };
-  }, [orderData, ingredients]);
+  }, [currentOrder, ingredients]);
 
   if (!orderInfo) {
     return <Preloader />;

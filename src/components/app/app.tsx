@@ -79,9 +79,9 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path='*' element={<NotFound404 />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         {/*<Route path='/feed/:number' element={<OrderInfo />} />*/}
-        <Route path='*' element={<NotFound404 />} />
       </Routes>
       {background && (
         <Routes>
@@ -93,8 +93,17 @@ const App = () => {
               </Modal>
             }
           />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='' onClose={handleModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+
           {/*<Route*/}
-          {/*  path='/feed/:number'*/}
+          {/*  path='/profile/orders/:number'*/}
           {/*  element={*/}
           {/*    <Modal title='Информация о заказе' onClose={handleModalClose}>*/}
           {/*      <OrderInfo />*/}

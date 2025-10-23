@@ -1,14 +1,19 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { RootState } from '../../services/store';
-import { useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../services/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((state: RootState) => ({
     bun: state.burgerConstructor.bun,
     ingredients: state.burgerConstructor.ingredients
   }));
+  const { isAuthenticated } = useSelector((state: RootState) => state.userAuth);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const orderRequest = false;
 
@@ -16,6 +21,16 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+    // dispatch(
+    //   fetchCreateOrder({
+    //     bun: constructorItems.bun,
+    //     ingredients: constructorItems.ingredients
+    //   })
+    // );
   };
   const closeOrderModal = () => {};
 

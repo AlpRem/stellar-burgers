@@ -1,11 +1,12 @@
 import { TOrder } from '@utils-types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getFeedsApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi } from '@api';
 
 type TOrderSlice = {
   orders: TOrder[];
   total: number;
   totalToday: number;
+  currentOrder: TOrder | null;
   isLoading: boolean;
   error: string | null;
 };
@@ -14,15 +15,28 @@ const initialState: TOrderSlice = {
   orders: [],
   total: 0,
   totalToday: 0,
+  currentOrder: null,
   isLoading: false,
   error: null
 };
 
-export const fetchOrders = createAsyncThunk(
+export const fetchGetListOrders = createAsyncThunk(
   'feed/fetchOrders',
   async (_, { rejectWithValue }) => {
     try {
       return await getFeedsApi();
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const fetchFindByIdOrder = createAsyncThunk<TOrder, number>(
+  'order/fetchByNumber',
+  async (number, { rejectWithValue }) => {
+    try {
+      const res = await getOrderByNumberApi(number);
+      return res.orders[0]; // предположим, что API возвращает массив
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -35,18 +49,33 @@ const orderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchOrders.pending, (state) => {
+      .addCase(fetchGetListOrders.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
+      .addCase(fetchGetListOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
         state.orders = action.payload.orders;
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
       })
-      .addCase(fetchOrders.rejected, (state, action) => {
+      .addCase(fetchGetListOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(fetchFindByIdOrder.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchFindByIdOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.currentOrder = action.payload;
+      })
+      .addCase(fetchFindByIdOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
