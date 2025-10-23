@@ -1,6 +1,6 @@
 import { TOrder } from '@utils-types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getFeedsApi, getOrderByNumberApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
 
 type TOrderSlice = {
   orders: TOrder[];
@@ -43,10 +43,28 @@ export const fetchFindByIdOrder = createAsyncThunk<TOrder, number>(
   }
 );
 
+export const fetchSaveOrder = createAsyncThunk<
+  TOrder,
+  { bun: { _id: string }; ingredients: { _id: string }[] },
+  { rejectValue: string }
+>('orders/create', async ({ bun, ingredients }, { rejectWithValue }) => {
+  try {
+    const ids = [bun._id, ...ingredients.map((i) => i._id), bun._id];
+    const res = await orderBurgerApi(ids);
+    return res.order;
+  } catch (err: any) {
+    return rejectWithValue(err.message);
+  }
+});
+
 const orderSlice = createSlice({
   name: 'orders',
   initialState,
-  reducers: {},
+  reducers: {
+    clearOrder(state) {
+      state.currentOrder = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchGetListOrders.pending, (state) => {
@@ -79,7 +97,23 @@ const orderSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       });
+
+    builder
+      .addCase(fetchSaveOrder.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchSaveOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.currentOrder = action.payload;
+      })
+      .addCase(fetchSaveOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   }
 });
 
+export const { clearOrder } = orderSlice.actions;
 export default orderSlice.reducer;

@@ -4,6 +4,7 @@ import { BurgerConstructorUI } from '@ui';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { clearOrder, fetchSaveOrder } from '../../slice/orderSlice';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((state: RootState) => ({
@@ -15,9 +16,12 @@ export const BurgerConstructor: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const orderRequest = false;
+  const { currentOrder, isLoading } = useSelector(
+    (state: RootState) => state.orders
+  );
 
-  const orderModalData = null;
+  const orderRequest = isLoading;
+  const orderModalData = currentOrder;
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
@@ -25,14 +29,16 @@ export const BurgerConstructor: FC = () => {
       navigate('/login', { state: { from: location } });
       return;
     }
-    // dispatch(
-    //   fetchCreateOrder({
-    //     bun: constructorItems.bun,
-    //     ingredients: constructorItems.ingredients
-    //   })
-    // );
+    dispatch(
+      fetchSaveOrder({
+        bun: constructorItems.bun,
+        ingredients: constructorItems.ingredients
+      })
+    );
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    dispatch(clearOrder());
+  };
 
   const price = useMemo(
     () =>
