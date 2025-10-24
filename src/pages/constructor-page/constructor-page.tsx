@@ -6,7 +6,7 @@ import { Preloader } from '@ui';
 import { FC, useEffect } from 'react';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGetBurgerIngredient } from '../../slice/burgerIngredientSlice';
+import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
 
 export const ConstructorPage: FC = () => {
   const isIngredientsLoading = useSelector(
@@ -14,9 +14,15 @@ export const ConstructorPage: FC = () => {
   );
 
   const dispatch: AppDispatch = useDispatch();
+  const { buns, mains, sauces } = useSelector(
+    (state: RootState) => state.burgerIngredient
+  );
+
   useEffect(() => {
-    dispatch(fetchGetBurgerIngredient());
-  }, [dispatch]);
+    if (buns.length === 0 && mains.length === 0 && sauces.length === 0) {
+      dispatch(fetchGetBurgerIngredient());
+    }
+  }, [dispatch, buns, mains, sauces]);
 
   return (
     <>

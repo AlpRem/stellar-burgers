@@ -4,8 +4,7 @@ import { IngredientDetailsUI } from '@ui';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
-import { fetchGetIngredientById } from '../../slice/burgerIngredientSlice';
-import { ErrorServer, NotFound404 } from '@pages';
+import { fetchGetIngredientById } from '../../services/burgerIngredientSlice';
 
 export const IngredientDetails: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,10 +21,6 @@ export const IngredientDetails: FC = () => {
 
   if (isLoading || !currentIngredient) {
     return <Preloader />;
-  }
-
-  if (error) {
-    return <ErrorServer />;
   }
 
   return <IngredientDetailsUI ingredientData={currentIngredient} />;

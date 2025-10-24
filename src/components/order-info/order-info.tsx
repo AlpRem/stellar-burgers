@@ -5,7 +5,8 @@ import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
-import { fetchFindByIdOrder } from '../../slice/orderSlice';
+import { fetchFindByIdOrder } from '../../services/orderSlice';
+import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
@@ -19,7 +20,10 @@ export const OrderInfo: FC = () => {
     if (number) {
       dispatch(fetchFindByIdOrder(+number));
     }
-  }, [dispatch, number]);
+    if (!buns.length && !mains.length && !sauces.length) {
+      dispatch(fetchGetBurgerIngredient());
+    }
+  }, [dispatch, number, buns.length, mains.length, sauces.length]);
 
   const orderInfo = useMemo(() => {
     if (!currentOrder || !ingredients.length) return null;

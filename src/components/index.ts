@@ -13,3 +13,5 @@ export * from './order-status';
 export * from './orders-list';
 export * from './profile-menu';
 export * from './protected-route';
+export * from './order-modal';
+export * from './order-info-title';

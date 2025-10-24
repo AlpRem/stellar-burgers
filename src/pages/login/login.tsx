@@ -2,8 +2,7 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLogin } from '../../slice/userAuthSlice';
-import { ErrorServer } from '../error-server';
+import { fetchLogin } from '../../services/userAuthSlice';
 
 export const Login: FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -21,7 +20,7 @@ export const Login: FC = () => {
 
   return (
     <>
-      {error && <ErrorServer msg={error} />}
+      {error}
       <LoginUI
         errorText=''
         email={email}

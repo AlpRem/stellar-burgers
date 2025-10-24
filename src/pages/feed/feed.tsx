@@ -4,8 +4,8 @@ import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGetBurgerIngredient } from '../../slice/burgerIngredientSlice';
-import { fetchGetListOrders } from '../../slice/orderSlice';
+import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
+import { fetchGetListOrders } from '../../services/orderSlice';
 
 export const Feed: FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -14,10 +14,16 @@ export const Feed: FC = () => {
     (state: RootState) => state.orders
   );
 
+  const { buns, mains, sauces } = useSelector(
+    (state: RootState) => state.burgerIngredient
+  );
+
   useEffect(() => {
-    dispatch(fetchGetBurgerIngredient());
+    if (buns.length === 0 && mains.length === 0 && sauces.length === 0) {
+      dispatch(fetchGetBurgerIngredient());
+    }
     dispatch(fetchGetListOrders());
-  }, [dispatch]);
+  }, [dispatch, buns, mains, sauces]);
 
   if (isLoading || orders.length === 0) {
     return <Preloader />;

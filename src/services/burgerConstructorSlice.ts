@@ -46,10 +46,8 @@ const burgerConstructorSlice = createSlice({
         currentIndex >= state.ingredients.length
       )
         return;
-      const tempIngredients = [...state.ingredients];
-      const [movedIngredients] = tempIngredients.splice(currentIndex, 1);
-      tempIngredients.splice(newIndex, 0, movedIngredients);
-      state.ingredients = tempIngredients;
+      const movedIngredient = state.ingredients.splice(currentIndex, 1)[0];
+      state.ingredients.splice(newIndex, 0, movedIngredient);
     },
 
     clearConstructor(state) {

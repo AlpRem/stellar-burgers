@@ -3,7 +3,7 @@ import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
-import { fetchFindByUserOrders } from '../../slice/orderSlice';
+import { fetchFindByUserOrders } from '../../services/orderSlice';
 import { Preloader } from '@ui';
 
 export const ProfileOrders: FC = () => {

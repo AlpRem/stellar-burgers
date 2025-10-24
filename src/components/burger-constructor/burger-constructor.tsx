@@ -1,11 +1,11 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { clearOrder, fetchSaveOrder } from '../../slice/orderSlice';
-import { clearConstructor } from '../../slice/burgerConstructorSlice';
+import { clearOrder, fetchSaveOrder } from '../../services/orderSlice';
+import { clearConstructor } from '../../services/burgerConstructorSlice';
 
 export const BurgerConstructor: FC = () => {
   const constructorItems = useSelector((state: RootState) => ({
@@ -17,7 +17,7 @@ export const BurgerConstructor: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { currentOrder, isLoading } = useSelector(
+  const { currentOrder, isLoading, error } = useSelector(
     (state: RootState) => state.orders
   );
 
@@ -37,9 +37,15 @@ export const BurgerConstructor: FC = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (currentOrder && !error && !isLoading) {
+      dispatch(clearConstructor());
+    }
+  }, [currentOrder, error, isLoading, dispatch]);
+
   const closeOrderModal = () => {
     dispatch(clearOrder());
-    dispatch(clearConstructor());
   };
 
   const price = useMemo(

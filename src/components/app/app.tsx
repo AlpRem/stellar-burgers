@@ -12,7 +12,13 @@ import {
 import '../../index.css';
 import styles from './app.module.css';
 
-import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import {
+  AppHeader,
+  IngredientDetails,
+  Modal,
+  ModalOrder,
+  OrderInfoTitle
+} from '@components';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
 
@@ -66,7 +72,7 @@ const App = () => {
         <Route
           path='/profile'
           element={
-            <ProtectedRoute onlyUnAuthorized={false}>
+            <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
           }
@@ -74,42 +80,47 @@ const App = () => {
         <Route
           path='/profile/orders'
           element={
-            <ProtectedRoute onlyUnAuthorized={false}>
+            <ProtectedRoute>
               <ProfileOrders />
             </ProtectedRoute>
           }
         />
         <Route path='*' element={<NotFound404 />} />
-        <Route path='/ingredients/:id' element={<IngredientDetails />} />
-        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route
+          path='/ingredients/:id'
+          element={
+            <div className={styles.detailPageWrap}>
+              <p className={`text text_type_main-large`}>Детали ингредиента</p>
+              <IngredientDetails />
+            </div>
+          }
+        />
+        <Route
+          path='/feed/:number'
+          element={<OrderInfoTitle className={styles.detailPageWrap} />}
+        />
       </Routes>
       {background && (
         <Routes>
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title='Детали ингридиента' onClose={handleModalClose}>
+              <Modal title='Детали ингредиента' onClose={handleModalClose}>
                 <IngredientDetails />
               </Modal>
             }
           />
           <Route
             path='/feed/:number'
-            element={
-              <Modal title='' onClose={handleModalClose}>
-                <OrderInfo />
-              </Modal>
-            }
+            element={<ModalOrder onClose={handleModalClose} />}
           />
 
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title='Информация о заказе' onClose={handleModalClose}>
-                <ProtectedRoute onlyUnAuthorized={false}>
-                  <OrderInfo />
-                </ProtectedRoute>
-              </Modal>
+              <ProtectedRoute>
+                <ModalOrder onClose={handleModalClose} />
+              </ProtectedRoute>
             }
           />
         </Routes>

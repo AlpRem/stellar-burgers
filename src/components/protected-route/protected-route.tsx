@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../services/store';
 import { getCookie } from '../../utils/cookie';
-import { fetchGetUser } from '../../slice/userAuthSlice';
+import { fetchGetUser } from '../../services/userAuthSlice';
 import { Preloader } from '@ui';
 
 type ProtectedRouteParams = {
