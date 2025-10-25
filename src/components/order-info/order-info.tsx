@@ -28,7 +28,6 @@ export const OrderInfo: FC = () => {
     if (!currentOrder || !ingredients.length) return null;
 
     const date = new Date(currentOrder.createdAt);
-
     type TIngredientsWithCount = {
       [key: string]: TIngredient & { count: number };
     };
@@ -56,7 +55,6 @@ export const OrderInfo: FC = () => {
       (acc, item) => acc + item.price * item.count,
       0
     );
-
     return {
       ...currentOrder,
       ingredientsInfo,

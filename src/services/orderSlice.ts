@@ -41,7 +41,7 @@ export const fetchFindByIdOrder = createAsyncThunk<TOrder, number>(
   async (number, { rejectWithValue }) => {
     try {
       const res = await getOrderByNumberApi(number);
-      return res.orders[0]; // предположим, что API возвращает массив
+      return res.orders[0];
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
