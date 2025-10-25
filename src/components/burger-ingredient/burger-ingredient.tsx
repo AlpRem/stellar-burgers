@@ -13,7 +13,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const dispatch: AppDispatch = useAppDispatch();
 
     const handleAdd = () => {
-      dispatch(addIngredient({ ...ingredient, id: crypto.randomUUID() }));
+      dispatch(addIngredient(ingredient));
     };
 
     return (
