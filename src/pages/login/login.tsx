@@ -1,12 +1,12 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { fetchLogin } from '../../services/userAuthSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const Login: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const { error } = useSelector((state: RootState) => state.userAuth);
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector((state) => state.userAuth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

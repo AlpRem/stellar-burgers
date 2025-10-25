@@ -4,18 +4,18 @@ import { BurgerIngredients } from '@components';
 import { BurgerConstructor } from '@components';
 import { Preloader } from '@ui';
 import { FC, useEffect } from 'react';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const ConstructorPage: FC = () => {
-  const isIngredientsLoading = useSelector(
-    (state: RootState) => state.burgerIngredient.isLoading
+  const isIngredientsLoading = useAppSelector(
+    (state) => state.burgerIngredient.isLoading
   );
 
-  const dispatch: AppDispatch = useDispatch();
-  const { buns, mains, sauces } = useSelector(
-    (state: RootState) => state.burgerIngredient
+  const dispatch = useAppDispatch();
+  const { buns, mains, sauces } = useAppSelector(
+    (state) => state.burgerIngredient
   );
 
   useEffect(() => {

@@ -1,24 +1,24 @@
 import { FC, useEffect, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 import { clearOrder, fetchSaveOrder } from '../../services/orderSlice';
 import { clearConstructor } from '../../services/burgerConstructorSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const BurgerConstructor: FC = () => {
-  const constructorItems = useSelector((state: RootState) => ({
+  const constructorItems = useAppSelector((state) => ({
     bun: state.burgerConstructor.bun,
     ingredients: state.burgerConstructor.ingredients
   }));
-  const { isAuthenticated } = useSelector((state: RootState) => state.userAuth);
-  const dispatch = useDispatch<AppDispatch>();
+  const { isAuthenticated } = useAppSelector((state) => state.userAuth);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { currentOrder, isLoading, error } = useSelector(
-    (state: RootState) => state.orders
+  const { currentOrder, isLoading, error } = useAppSelector(
+    (state) => state.orders
   );
 
   const orderRequest = isLoading;

@@ -1,13 +1,12 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
 import { fetchRegister } from '../../services/userAuthSlice';
 import { Preloader } from '@ui';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const Register: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const { isLoading } = useSelector((state: RootState) => state.userAuth);
+  const dispatch = useAppDispatch();
+  const { isLoading } = useAppSelector((state) => state.userAuth);
 
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');

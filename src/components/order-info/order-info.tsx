@@ -3,17 +3,16 @@ import { Preloader } from '@ui';
 import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
 import { fetchFindByIdOrder } from '../../services/orderSlice';
 import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
-  const dispatch = useDispatch<AppDispatch>();
-  const { currentOrder } = useSelector((state: RootState) => state.orders);
-  const { buns, mains, sauces } = useSelector(
-    (state: RootState) => state.burgerIngredient
+  const dispatch = useAppDispatch();
+  const { currentOrder } = useAppSelector((state) => state.orders);
+  const { buns, mains, sauces } = useAppSelector(
+    (state) => state.burgerIngredient
   );
   const ingredients: TIngredient[] = [...buns, ...mains, ...sauces];
   useEffect(() => {

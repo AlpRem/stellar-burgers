@@ -1,10 +1,9 @@
 import { ReactNode, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
 import { getCookie } from '../../utils/cookie';
 import { fetchGetUser } from '../../services/userAuthSlice';
 import { Preloader } from '@ui';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 type ProtectedRouteParams = {
   onlyUnAuthorized?: boolean;
@@ -13,9 +12,9 @@ type ProtectedRouteParams = {
 
 function ProtectedRoute({ children, onlyUnAuthorized }: ProtectedRouteParams) {
   const location = useLocation();
-  const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, isLoading } = useSelector(
-    (state: RootState) => state.userAuth
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, isLoading } = useAppSelector(
+    (state) => state.userAuth
   );
 
   useEffect(() => {
