@@ -3,7 +3,7 @@ import { Preloader } from '@ui';
 import { OrderInfoUI } from '@ui';
 import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
-import { fetchFindByIdOrder } from '../../services/orderSlice';
+import { clearOrder, fetchFindByIdOrder } from '../../services/orderSlice';
 import { fetchGetBurgerIngredient } from '../../services/burgerIngredientSlice';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
@@ -22,6 +22,9 @@ export const OrderInfo: FC = () => {
     if (!buns.length && !mains.length && !sauces.length) {
       dispatch(fetchGetBurgerIngredient());
     }
+    return () => {
+      dispatch(clearOrder());
+    };
   }, [dispatch, number, buns.length, mains.length, sauces.length]);
 
   const orderInfo = useMemo(() => {
