@@ -30,8 +30,8 @@ export const fetchGetListOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await getFeedsApi();
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch {
+      return rejectWithValue('Ошибка получения списка заказов');
     }
   }
 );
@@ -42,8 +42,8 @@ export const fetchFindByIdOrder = createAsyncThunk<TOrder, number>(
     try {
       const res = await getOrderByNumberApi(number);
       return res.orders[0];
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch {
+      return rejectWithValue('Ошибка получения заказа по ключу');
     }
   }
 );
@@ -57,8 +57,8 @@ export const fetchSaveOrder = createAsyncThunk<
     const ids = [bun._id, ...ingredients.map((i) => i._id), bun._id];
     const res = await orderBurgerApi(ids);
     return res.order;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка сохранения заказа');
   }
 });
 
@@ -67,8 +67,8 @@ export const fetchFindByUserOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await getOrdersApi();
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch {
+      return rejectWithValue('Ошибка получения заказов пользователя');
     }
   }
 );

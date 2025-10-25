@@ -25,8 +25,8 @@ export const fetchGetBurgerIngredient = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await getIngredientsApi();
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch {
+      return rejectWithValue('Ошибка получения ингредиентов');
     }
   }
 );
@@ -41,8 +41,8 @@ export const fetchGetIngredientById = createAsyncThunk<
     const ingredient = allIngredients.find((item) => item._id === id);
     if (!ingredient) return rejectWithValue('Данные не найдены');
     return ingredient;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка поиска ингредиента');
   }
 });
 

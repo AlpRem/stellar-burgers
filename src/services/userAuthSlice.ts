@@ -33,8 +33,8 @@ export const fetchGetUser = createAsyncThunk<
   try {
     const res = await getUserApi();
     return res.user;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка получения пользователя');
   }
 });
 
@@ -48,8 +48,8 @@ export const fetchLogin = createAsyncThunk<
     localStorage.setItem('refreshToken', res.refreshToken);
     setCookie('accessToken', res.accessToken);
     return res.user;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка авторизации');
   }
 });
 
@@ -61,8 +61,9 @@ export const fetchRegister = createAsyncThunk<
   try {
     const res = await registerUserApi(data);
     return res.user;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    // if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue('Ошибка создания пользователя');
   }
 });
 
@@ -76,8 +77,8 @@ export const fetchLogout = createAsyncThunk<
     localStorage.removeItem('refreshToken');
     document.cookie = 'accessToken=; Max-Age=0; path=/;';
     return;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка разлогинивание');
   }
 });
 
@@ -89,8 +90,8 @@ export const fetchUpdateUser = createAsyncThunk<
   try {
     const res = await updateUserApi(userData);
     return res.user;
-  } catch (err: any) {
-    return rejectWithValue(err.message);
+  } catch {
+    return rejectWithValue('Ошибка обновления пользователя');
   }
 });
 
