@@ -1,6 +1,5 @@
 import { TConstructorIngredient, TIngredient } from '@utils-types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as crypto from 'node:crypto';
 
 type TBurgerIngredientSlice = {
   bun: TConstructorIngredient | null;
@@ -25,21 +24,21 @@ const burgerConstructorSlice = createSlice({
         const ingredient = action.payload;
         if (ingredient.type === 'bun') state.bun = ingredient;
         else state.ingredients.push(ingredient);
+        localStorage.setItem('burger', JSON.stringify(state));
       },
-      prepare: (ingredients: TIngredient) => {
-        return {
-          payload: {
-            ...ingredients,
-            id: crypto.randomUUID()
-          } as TConstructorIngredient
-        };
-      }
+      prepare: (ingredients: TIngredient) => ({
+        payload: {
+          ...ingredients,
+          id: crypto.randomUUID()
+        } as TConstructorIngredient
+      })
     },
 
     deleteIngredient: (state, action: PayloadAction<string>) => {
       state.ingredients = state.ingredients.filter(
         (item) => item.id !== action.payload
       );
+      localStorage.setItem('burger', JSON.stringify(state));
     },
 
     moveIngredient: (
@@ -55,11 +54,21 @@ const burgerConstructorSlice = createSlice({
         return;
       const movedIngredient = state.ingredients.splice(currentIndex, 1)[0];
       state.ingredients.splice(newIndex, 0, movedIngredient);
+      localStorage.setItem('burger', JSON.stringify(state));
     },
 
     clearConstructor(state) {
       state.bun = null;
       state.ingredients = [];
+      localStorage.removeItem('burger');
+    },
+
+    saveConstructorToStore: (
+      state,
+      action: PayloadAction<TBurgerIngredientSlice>
+    ) => {
+      state.bun = action.payload.bun;
+      state.ingredients = action.payload.ingredients;
     }
   }
 });
@@ -68,6 +77,7 @@ export const {
   addIngredient,
   deleteIngredient,
   moveIngredient,
-  clearConstructor
+  clearConstructor,
+  saveConstructorToStore
 } = burgerConstructorSlice.actions;
 export default burgerConstructorSlice.reducer;

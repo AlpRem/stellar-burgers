@@ -4,7 +4,10 @@ import { BurgerConstructorUI } from '@ui';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { clearOrder, fetchSaveOrder } from '../../services/orderSlice';
-import { clearConstructor } from '../../services/burgerConstructorSlice';
+import {
+  clearConstructor,
+  saveConstructorToStore
+} from '../../services/burgerConstructorSlice';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 export const BurgerConstructor: FC = () => {
@@ -39,6 +42,8 @@ export const BurgerConstructor: FC = () => {
   };
 
   useEffect(() => {
+    const burgerJson = localStorage.getItem('burger');
+    if (burgerJson) dispatch(saveConstructorToStore(JSON.parse(burgerJson)));
     if (currentOrder && !error && !isLoading) {
       dispatch(clearConstructor());
     }
