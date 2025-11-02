@@ -39,8 +39,12 @@ describe('Проверяем функциональность работы с и
       });
   });
 
-  it('Проверка открытие модального окна ингредиента', function () {
+  it('Проверка работы модальных окн (открытие окна ингредиента, закрытия по клику на крестик)', function () {
     cy.get('[data-cy=cy-ingredient]').first().click();
-    cy.get('[data-cy=cy-ingredient-details]').should('exist');
+    cy.get('[data-cy=cy-modal]').should('exist');
+    cy.get('[data-cy=cy-modal-btn-close]').click();
+    cy.get('[data-cy=cy-modal]').should('not.exist');
   });
+
+
 });
