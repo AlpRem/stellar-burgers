@@ -21,6 +21,9 @@ import {
 } from '@components';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
+import { useEffect } from 'react';
+import { fetchGetUser } from '../../services/userAuthSlice';
 
 const App = () => {
   const location = useLocation();
@@ -30,6 +33,15 @@ const App = () => {
   const handleModalClose = () => {
     navigate(-1);
   };
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.userAuth);
+
+  useEffect(() => {
+    const token = document.cookie.includes('accessToken');
+    if (token && !isAuthenticated) {
+      dispatch(fetchGetUser());
+    }
+  }, [dispatch, isAuthenticated]);
 
   return (
     <div className={styles.app}>

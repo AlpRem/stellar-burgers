@@ -1,11 +1,16 @@
-import { TIngredient } from '@utils-types';
+import { TConstructorIngredientFromOrder } from '../support/types';
 
 describe('Проверяем функциональность работы с ингредиентами', function () {
   beforeEach(() => {
     cy.intercept('GET', '**/ingredients', {
       fixture: 'ingredients.json'
     }).as('getListIngredients');
+    cy.fixture('ingredients-order.json').as('ingredientsOnOrder');
     cy.visit('http://localhost:4000/');
+  });
+
+  afterEach(() => {
+    cy.clearLocalStorage();
   });
 
   it('Проверка вывода ингредиентов с моковыми данными', function () {
@@ -20,6 +25,7 @@ describe('Проверяем функциональность работы с и
       });
     });
   });
+
 
   it('Проверка добавления ингредиента из списка в конструктор', function () {
     [0, 1, 2].forEach((i: number) => {
@@ -67,5 +73,69 @@ describe('Проверяем функциональность работы с и
     cy.get('@ingredient').click();
     cy.get('[data-cy=cy-modal-overlay]').click({ force: true });
     cy.get('[data-cy=cy-modal]').should('not.exist');
+  });
+});
+
+describe('Проверяем функциональность работы с заказом', function () {
+  let orderData: TConstructorIngredientFromOrder;
+  let orderNumber: number;
+
+  beforeEach(() => {
+    cy.setCookie('accessToken', 'my-accessToken');
+    cy.setCookie('refreshToken', 'my-refreshToken');
+    cy.fixture('ingredients-order.json').then((data) => {
+      orderData = data;
+      localStorage.setItem('burger', JSON.stringify(orderData));
+    });
+    cy.fixture('order.json').then((orderData) => {
+      orderNumber = orderData.order.number;
+    });
+    cy.intercept('GET', '**/auth/user', {
+      fixture: 'user.json'
+    });
+    cy.intercept('POST', '**/orders', { fixture: 'order.json' });
+    cy.visit('http://localhost:4000/login');
+  });
+
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  });
+
+  it('Проверка работы хранилища ингридиентов через мок-данные', function () {
+    cy.get('[data-cy=cy-bun-top]')
+      .should('exist')
+      .and('contain.text', orderData.bun.name);
+    cy.get('[data-cy=cy-bun-bottom]')
+      .should('exist')
+      .and('contain.text', orderData.bun.name);
+    cy.get('[data-cy=cy-element]')
+      .should('have.length', orderData.ingredients.length)
+      .each(($element, index) => {
+        cy.wrap($element).should(
+          'contain.text',
+          orderData.ingredients[index].name
+        );
+      });
+  });
+
+  it('Проверка номера заказа и закрытия модального окна,', () => {
+    cy.get('[data-cy=cy-order-button] button').click();
+    cy.get('[data-cy=cy-modal]').should('exist');
+    cy.get('[data-cy=cy-order-number]')
+      .should('exist')
+      .and('contain.text', orderNumber);
+    cy.get('[data-cy=cy-modal-btn-close]').click();
+  });
+
+  it('Проверка очистки конструктора,', () => {
+    cy.get('[data-cy=cy-order-button] button').click();
+    cy.get('[data-cy=cy-modal-btn-close]').click();
+    cy.get('[data-cy=cy-bun-top]').should('not.exist');
+    cy.get('[data-cy=cy-bun-bottom]').should('not.exist');
+    cy.get('[data-cy=cy-element]').should('not.exist');
+    cy.window().then((win) => {
+      expect(win.localStorage.getItem('burger')).to.be.null;
+    });
   });
 });
