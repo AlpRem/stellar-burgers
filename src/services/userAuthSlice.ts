@@ -11,7 +11,7 @@ import {
 } from '@api';
 import { setCookie } from '../utils/cookie';
 
-type TUserSlice = {
+export type TUserSlice = {
   user: TUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -125,7 +125,7 @@ export const userAuthSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         state.user = action.payload;
-        state.isAuthenticated = true;
+        state.isAuthenticated = false;
       })
       .addCase(fetchRegister.rejected, (state, action) => {
         state.isLoading = false;
