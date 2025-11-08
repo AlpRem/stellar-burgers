@@ -1,12 +1,17 @@
 import { TConstructorIngredientFromOrder } from '../support/types';
+import { TIngredient } from '@utils-types';
 
 describe('Проверяем функциональность работы с ингредиентами', function () {
+  let ingredientListData: TIngredient[] = [];
   beforeEach(() => {
-    cy.intercept('GET', '**/ingredients', {
-      fixture: 'ingredients.json'
-    }).as('getListIngredients');
+    cy.fixture('ingredients.json').then((ingredients) => {
+      ingredientListData = ingredients.data;
+      cy.intercept('GET', '**/ingredients', {
+        body: ingredients
+      }).as('getListIngredients');
+    });
     cy.fixture('ingredients-order.json').as('ingredientsOnOrder');
-    cy.visit('http://localhost:4000/');
+    cy.visit('/');
   });
 
   afterEach(() => {
@@ -25,7 +30,6 @@ describe('Проверяем функциональность работы с и
       });
     });
   });
-
 
   it('Проверка добавления ингредиента из списка в конструктор', function () {
     [0, 1, 2].forEach((i: number) => {
@@ -55,10 +59,31 @@ describe('Проверяем функциональность работы с и
   });
 
   it('Проверка работы открытия модального окна ингредиента', function () {
-    cy.get('[data-cy=cy-ingredient]').should('exist').first().as('ingredient');
-    cy.get('@ingredient').click();
-    cy.get('[data-cy=cy-modal]').should('exist');
-    cy.get('[data-cy=cy-ingredient-details-name]').should('exist');
+    cy.contains('[data-cy=cy-ingredient]', ingredientListData[0].name).click();
+    cy.get('[data-cy=cy-modal]')
+      .should('exist')
+      .within(() => {
+        cy.get('[data-cy=cy-ingredient-details-name]').should(
+          'contain.text',
+          ingredientListData[0].name
+        );
+        cy.get('[data-cy=cy-ingredient-details-calories]').should(
+          'contain.text',
+          ingredientListData[0].calories
+        );
+        cy.get('[data-cy=cy-ingredient-details-proteins]').should(
+          'contain.text',
+          ingredientListData[0].proteins
+        );
+        cy.get('[data-cy=cy-ingredient-details-fat]').should(
+          'contain.text',
+          ingredientListData[0].fat
+        );
+        cy.get('[data-cy=cy-ingredient-details-carbohydrates]').should(
+          'contain.text',
+          ingredientListData[0].carbohydrates
+        );
+      });
   });
 
   it('Проверка работы закрытия модального окна через крестик', function () {
@@ -94,7 +119,7 @@ describe('Проверяем функциональность работы с з
       fixture: 'user.json'
     });
     cy.intercept('POST', '**/orders', { fixture: 'order.json' });
-    cy.visit('http://localhost:4000/login');
+    cy.visit('/login');
   });
 
   afterEach(() => {
