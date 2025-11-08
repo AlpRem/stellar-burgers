@@ -163,6 +163,7 @@ export const userAuthSlice = createSlice({
       })
       .addCase(fetchLogout.rejected, (state, action) => {
         state.error = action.payload as string;
+        state.isLoading = false;
       });
 
     builder
