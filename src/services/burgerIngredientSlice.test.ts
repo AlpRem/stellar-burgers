@@ -148,4 +148,26 @@ describe('Проверяют редьюсер слайса для ингреди
     expect(isLoading).toEqual(false);
     expect(error).toEqual(err);
   });
+
+  test('Тест получения ингредиента по ID. Состояние rejected (Данные не найдены)', async () => {
+    const err = 'Данные не найдены';
+    jest
+      .spyOn(api, 'getIngredientsApi')
+      .mockResolvedValue([
+        ...mockBunsIngredients,
+        ...mockMainsIngredients,
+        ...mockSaucesIngredients
+      ]);
+    const store = configureStore({
+      reducer: { burgerIngredient: burgerIngredientReducer }
+    });
+    await store.dispatch(
+      fetchGetIngredientById(mockBunsIngredients[0]._id + '1')
+    );
+    const { currentIngredient, isLoading, error } =
+      store.getState().burgerIngredient;
+    expect(currentIngredient).toEqual(null);
+    expect(isLoading).toEqual(false);
+    expect(error).toEqual(err);
+  });
 });
