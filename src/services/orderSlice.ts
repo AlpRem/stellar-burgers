@@ -74,7 +74,7 @@ export const fetchFindByUserOrders = createAsyncThunk(
 );
 
 const orderSlice = createSlice({
-  name: 'orders',
+  name: 'order',
   initialState,
   reducers: {
     clearOrder(state) {
