@@ -7,7 +7,7 @@ import {
   orderBurgerApi
 } from '@api';
 
-type TOrderSlice = {
+export type TOrderSlice = {
   orders: TOrder[];
   total: number;
   totalToday: number;
